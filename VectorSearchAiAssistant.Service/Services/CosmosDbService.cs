@@ -1,17 +1,15 @@
-﻿using Microsoft.Azure.Cosmos.Fluent;
-using Microsoft.Azure.Cosmos;
+﻿using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Logging;
-using VectorSearchAiAssistant.Service.Models.Chat;
-using VectorSearchAiAssistant.Service.Interfaces;
-using VectorSearchAiAssistant.Service.Models.Search;
 using Microsoft.Extensions.Options;
-using VectorSearchAiAssistant.Service.Models.ConfigurationOptions;
 using Newtonsoft.Json.Linq;
-using VectorSearchAiAssistant.Service.Models;
-using VectorSearchAiAssistant.Service.Utils;
 using System.Diagnostics;
-using Castle.Core.Resource;
-using VectorSearchAiAssistant.SemanticKernel.Models;
+using VectorSearchAiAssistant.Service.Interfaces;
+using VectorSearchAiAssistant.Service.Models;
+using VectorSearchAiAssistant.Service.Models.Chat;
+using VectorSearchAiAssistant.Service.Models.ConfigurationOptions;
+using VectorSearchAiAssistant.Service.Models.Search;
+using VectorSearchAiAssistant.Service.Utils;
 
 namespace VectorSearchAiAssistant.Service.Services
 {

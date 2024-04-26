@@ -1,20 +1,22 @@
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Logging;
 using Search.Helpers;
-using VectorSearchAiAssistant.Service.Services;
-using VectorSearchAiAssistant.Service.Interfaces;
-using VectorSearchAiAssistant.Service.Models.ConfigurationOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.RegisterConfiguration();
+builder.AddServiceDefaults();
+
 builder.Services.AddRazorPages();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Services.AddServerSideBlazor();
-builder.Services.RegisterServices();
+
+builder.Services.AddHttpClient<ChatManagerClient>(client =>
+{
+    client.BaseAddress = new Uri("https+http://chatserviceapi");
+});
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -30,17 +32,3 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 await app.RunAsync();
-
-static class ProgramExtensions
-{
-    public static void RegisterConfiguration(this WebApplicationBuilder builder)
-    {
-        builder.Services.AddOptions<ChatManagerSettings>()
-            .Bind(builder.Configuration.GetSection("MSCosmosDBOpenAI:ChatManager"));
-    }
-
-    public static void RegisterServices(this IServiceCollection services)
-    {
-        services.AddSingleton<IChatManager, ChatManager>();
-    }
-}

@@ -1,8 +1,8 @@
 #! /usr/bin/pwsh
 
 Param(
-    [parameter(Mandatory=$false)][string]$resourceGroup=$env:AZURE_RESOURCE_GROUP,
-    [parameter(Mandatory=$false)][string]$apiUrl=$env:SERVICE_CHATSERVICEWEBAPI_ENDPOINT_URL
+    [parameter(Mandatory=$true)][string]$resourceGroup,
+    [parameter(Mandatory=$true)][string]$apiUrl
 )
 
 Push-Location $($MyInvocation.InvocationName | Split-Path)
@@ -24,6 +24,7 @@ $ProgressPreference = "SilentlyContinue"
 $currentIndex = 0
 foreach($product in $products)
 {
+    Write-Output $apiUrl/products
     Invoke-RestMethod -Uri $apiUrl/products -Method PUT -Body ($product | ConvertTo-Json) -ContentType 'application/json'
 
     $currentIndex += 1

@@ -1,0 +1,100 @@
+{
+  "resources": {
+    "cogsearch": {
+      "type": "azure.bicep.v0",
+      "connectionString": "{cogsearch.outputs.connectionString}",
+      "path": "cogsearch.module.bicep",
+      "params": {
+        "principalId": "",
+        "principalType": ""
+      }
+    },
+    "aoai": {
+      "type": "azure.bicep.v0",
+      "connectionString": "{aoai.outputs.connectionString}",
+      "path": "aoai.module.bicep",
+      "params": {
+        "principalId": "",
+        "principalType": ""
+      }
+    },
+    "cosmosdb": {
+      "type": "azure.bicep.v0",
+      "path": "Search.AppHost/bicep/cosmosdb.resources.bicep",
+      "params": {
+        "keyVaultName": "mykv"
+      }
+    },
+    "storage": {
+      "type": "azure.bicep.v0",
+      "path": "storage.module.bicep",
+      "params": {
+        "principalId": "",
+        "principalType": ""
+      }
+    },
+    "system-prompt": {
+      "type": "value.v0",
+      "connectionString": "{storage.outputs.blobEndpoint}"
+    },
+    "memory-source": {
+      "type": "value.v0",
+      "connectionString": "{storage.outputs.blobEndpoint}"
+    },
+    "product-policy": {
+      "type": "value.v0",
+      "connectionString": "{storage.outputs.blobEndpoint}"
+    },
+    "chatserviceapi": {
+      "type": "project.v0",
+      "path": "ChatServiceWebApi/ChatServiceWebApi.csproj",
+      "env": {
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
+        "ConnectionStrings__memory-source": "{memory-source.connectionString}",
+        "ConnectionStrings__system-prompt": "{system-prompt.connectionString}",
+        "ConnectionStrings__cosmosdb": "{cosmosdb.outputs.connectionString}",
+        "ConnectionStrings__aoai": "{aoai.connectionString}",
+        "ConnectionStrings__cogsearch": "{cogsearch.connectionString}"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http"
+        },
+        "https": {
+          "scheme": "https",
+          "protocol": "tcp",
+          "transport": "http"
+        }
+      }
+    },
+    "search": {
+      "type": "project.v0",
+      "path": "Search/Search.csproj",
+      "env": {
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
+        "services__chatserviceapi__http__0": "{chatserviceapi.bindings.http.url}",
+        "services__chatserviceapi__https__0": "{chatserviceapi.bindings.https.url}"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "external": true
+        },
+        "https": {
+          "scheme": "https",
+          "protocol": "tcp",
+          "transport": "http",
+          "external": true
+        }
+      }
+    }
+  }
+}
